@@ -1,0 +1,153 @@
+import { useNavigate } from 'react-router-dom';
+import { IconMoodEmpty, IconCoins, IconCamera } from '@tabler/icons-react';
+
+export default function TypeSelection() {
+  const navigate = useNavigate();
+
+  const handleEmojis = () => {
+    navigate('/emoji-quick-launch');
+  };
+
+  const handleTokens = () => {
+    // Navigate to Tokens creation page
+    console.log('Tokens creation clicked');
+  };
+
+  const handlePhotos = () => {
+    // Navigate to Photos creation page
+    console.log('Photos creation clicked');
+  };
+
+  return (
+    <div className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden">
+      {/* Premium, subtle lime glow gradient */}
+      <div className="absolute left-[-15%] top-[-10%] h-[120%] w-[50%] bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/30 via-primary/0 to-transparent z-0 pointer-events-none" />
+      
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center w-full px-4 pt-1 pb-12">
+        {/* Top section - Title and Description */}
+        <div className="w-full mb-16">
+          {/* Title and subtitle */}
+          <h2 className="text-3xl font-bold text-text mb-2 text-center">Choose Token Type</h2>
+          <p className="text-text/80 text-center max-w-md text-sm mx-auto">
+            Select the type of token you want to create
+          </p>
+        </div>
+
+        {/* Cards Section */}
+        <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl">
+          {/* Emojis Card */}
+          <div 
+            onClick={handleEmojis}
+            className="flex-1 bg-surface/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10 cursor-pointer hover:scale-105 transition-all duration-300 hover:border-primary/30 group"
+          >
+            <h3 className="text-2xl font-bold text-primary mb-4">Emojis</h3>
+            
+            {/* Skeleton Screen */}
+            <div className="bg-background/50 rounded-lg p-4 mb-4 border border-white/5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                  <IconMoodEmpty className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <div className="h-3 bg-primary/20 rounded w-3/4 mb-1"></div>
+                  <div className="h-2 bg-primary/10 rounded w-1/2"></div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-2 bg-primary/15 rounded"></div>
+                <div className="h-2 bg-primary/15 rounded w-5/6"></div>
+                <div className="h-2 bg-primary/15 rounded w-4/6"></div>
+                <div className="h-2 bg-primary/15 rounded w-3/6"></div>
+              </div>
+              <div className="flex gap-2 mt-3">
+                <div className="w-6 h-6 bg-primary/30 rounded"></div>
+                <div className="w-6 h-6 bg-primary/20 rounded"></div>
+                <div className="w-6 h-6 bg-primary/10 rounded"></div>
+              </div>
+            </div>
+            
+            <p className="text-text/70 text-sm text-left">Launch expressive emojis on chain with our quick launch tool.</p>
+          </div>
+          
+          {/* Tokens Card */}
+          <div 
+            onClick={handleTokens}
+            className="flex-1 bg-surface/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10 cursor-pointer hover:scale-105 transition-all duration-300 hover:border-primary/30 group"
+          >
+            <h3 className="text-2xl font-bold text-primary mb-4">Tokens</h3>
+            
+            {/* Skeleton Screen */}
+            <div className="bg-background/50 rounded-lg p-4 mb-4 border border-white/5">
+               {/* Icon circle at left */}
+               <div className="flex items-center gap-3 mb-3">
+                 <div className="w-8 h-8 bg-primary/30 rounded-full flex items-center justify-center">
+                   <IconCoins className="w-4 h-4 text-primary" />
+                 </div>
+                 <div className="flex-1">
+                   <div className="h-3 bg-primary/20 rounded w-2/3 mb-1"></div>
+                   <div className="h-2 bg-primary/10 rounded w-1/2"></div>
+                 </div>
+               </div>
+               {/* Grid of boxes */}
+               <div className="grid grid-cols-3 gap-2 mb-3">
+                 <div className="w-full h-8 bg-primary/25 rounded"></div>
+                 <div className="w-full h-8 bg-primary/15 rounded"></div>
+                 <div className="w-full h-8 bg-primary/20 rounded"></div>
+               </div>
+               {/* Text lines */}
+               <div className="space-y-2">
+                 <div className="h-2 bg-primary/15 rounded"></div>
+                 <div className="h-2 bg-primary/15 rounded w-4/5"></div>
+                 <div className="h-2 bg-primary/15 rounded w-3/5"></div>
+               </div>
+               {/* Bottom element - status bar */}
+               <div className="mt-3">
+                 <div className="w-16 h-3 bg-primary/20 rounded"></div>
+               </div>
+             </div>
+            
+            <p className="text-text/70 text-sm text-left">Launch tokens on chain in one click.</p>
+          </div>
+
+          {/* Photos Card */}
+          <div 
+            onClick={handlePhotos}
+            className="flex-1 bg-surface/20 backdrop-blur-xl rounded-2xl p-6 border border-white/10 cursor-pointer hover:scale-105 transition-all duration-300 hover:border-primary/30 group"
+          >
+            <h3 className="text-2xl font-bold text-primary mb-4">Photos</h3>
+            
+            {/* Skeleton Screen */}
+            <div className="bg-background/50 rounded-lg p-4 mb-4 border border-white/5">
+              {/* Icon and text side by side */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-primary/25 rounded-full flex items-center justify-center">
+                  <IconCamera className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <div className="h-3 bg-primary/20 rounded w-2/3 mb-1"></div>
+                  <div className="h-2 bg-primary/10 rounded w-1/2"></div>
+                </div>
+              </div>
+              {/* Large photo boxes */}
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="w-full h-16 bg-primary/20 rounded"></div>
+                <div className="w-full h-16 bg-primary/15 rounded"></div>
+              </div>
+              {/* Text line */}
+              <div className="h-2 bg-primary/15 rounded w-3/4 mb-3"></div>
+              {/* Bottom element - small boxes */}
+              <div className="flex gap-2">
+                <div className="w-4 h-4 bg-primary/20 rounded"></div>
+                <div className="w-4 h-4 bg-primary/15 rounded"></div>
+                <div className="w-4 h-4 bg-primary/10 rounded"></div>
+              </div>
+            </div>
+            
+            <p className="text-text/70 text-sm text-left">Tokenize and sell photos and artworks on chain in one click.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
