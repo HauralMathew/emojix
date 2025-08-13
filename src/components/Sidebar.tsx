@@ -13,6 +13,7 @@ import {
   IconCoins,
   IconCamera
 } from '@tabler/icons-react';
+import glayzeLogo from '../assets/logo/300ppi/glayze logo@300x.png';
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -136,7 +137,7 @@ export default function Sidebar() {
         <div className="flex items-center h-16 px-4 mt-2">
           <div className="flex items-center justify-center w-6 h-6 rounded-lg overflow-hidden flex-shrink-0 -ml-1">
             <img 
-              src="/src/assets/logo/300ppi/glayze logo@300x.png" 
+              src={glayzeLogo} 
               alt="Glayze Logo" 
               className="w-8 h-8 object-contain"
             />

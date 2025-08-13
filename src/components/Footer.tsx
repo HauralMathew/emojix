@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAptPrice } from '../hooks/useAptPrice';
+import aptosIcon from '../assets/icons/Aptos_mark_WHT (1).png';
 
 export default function Footer() {
   const [isCreatorMode, setIsCreatorMode] = useState(true);
@@ -85,7 +86,7 @@ export default function Footer() {
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-primary/20 rounded-full flex items-center justify-center overflow-hidden">
                 <img 
-                  src="/src/assets/icons/Aptos_mark_WHT (1).png" 
+                  src={aptosIcon} 
                   alt="Aptos" 
                   className="w-full h-full object-contain"
                 />
