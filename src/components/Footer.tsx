@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAptPrice } from '../hooks/useAptPrice';
 import aptosIcon from '../assets/icons/Aptos_mark_WHT (1).png';
+import { convertAptToUsd, formatAptAmount } from '../utils/priceConversion';
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function Footer() {
   const [isCreatorMode, setIsCreatorMode] = useState(true);
-  const [isAptCurrency, setIsAptCurrency] = useState(true);
+  const { isAptCurrency, setIsAptCurrency } = useCurrency();
   const [isDarkMode, setIsDarkMode] = useState(true);
   
   // Real-time APT price from Panora API
@@ -20,18 +22,7 @@ export default function Footer() {
     }
   }, [isDarkMode]);
 
-  // Format price with proper decimal places
-  const formatPrice = (price: string) => {
-    const numPrice = parseFloat(price);
-    if (isNaN(numPrice)) return '$0.00';
-    
-    // Show 2 decimal places for prices >= $1, 4 for prices < $1
-    if (numPrice >= 1) {
-      return `$${numPrice.toFixed(2)}`;
-    } else {
-      return `$${numPrice.toFixed(4)}`;
-    }
-  };
+
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 bg-surface/20 backdrop-blur-xl border-t border-white/10 h-8 z-50">
@@ -96,32 +87,38 @@ export default function Footer() {
                   <div className="w-3 h-3 border border-primary/30 border-t-primary rounded-full animate-spin"></div>
                 ) : aptPrice ? (
                   <span className="text-text/80 text-xs font-medium tracking-wide">
-                    {formatPrice(aptPrice.usdPrice)}
+                    {convertAptToUsd(1, aptPrice)}
                   </span>
                 ) : (
-                  <span className="text-text/80 text-xs font-medium tracking-wide">$0.00</span>
+                  <span className="text-text/80 text-xs font-medium tracking-wide">
+                    $0.00
+                  </span>
                 )}
               </div>
             </div>
 
             {/* APT/USD Currency Toggle */}
             <div className="flex items-center space-x-2">
-              <span className="text-text/70 text-xs font-medium tracking-wide">Crypto</span>
+              <span className={`text-xs font-medium tracking-wide ${isAptCurrency ? 'text-primary' : 'text-text/70'}`}>
+                APT
+              </span>
               <button
                 onClick={() => setIsAptCurrency(!isAptCurrency)}
                 className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors duration-200 ${
-                  isAptCurrency ? 'bg-primary' : 'bg-white/10 border border-white/20'
+                  !isAptCurrency ? 'bg-primary' : 'bg-white/10 border border-white/20'
                 }`}
               >
                 <span
                   className={`inline-block h-3 w-3 transform rounded-full transition-all duration-200 ${
                     isAptCurrency 
-                      ? 'bg-background translate-x-4' 
-                      : 'bg-white/40 translate-x-1'
+                      ? 'bg-white/40 translate-x-1' 
+                      : 'bg-black translate-x-4'
                   }`}
                 />
               </button>
-              <span className="text-text/70 text-xs font-medium tracking-wide">USD</span>
+              <span className={`text-xs font-medium tracking-wide ${!isAptCurrency ? 'text-primary' : 'text-text/70'}`}>
+                USD
+              </span>
             </div>
 
             {/* Creator/Explorer Mode Toggle */}

@@ -21,6 +21,7 @@ import Trading from "./pages/Trading";
 import { AuthTest } from "./components/AuthTest";
 import { WalletProvider } from "@/components/WalletProvider";
 import { WalletManagerProvider } from "@/context/WalletManagerContext";
+import { CurrencyProvider } from "@/context/CurrencyContext";
 import Studio from "./pages/Studio";
 import TypeSelection from "./pages/TypeSelection";
 import Emojis from "./pages/Emojis";
@@ -68,36 +69,38 @@ function App() {
   return (
     <WalletProvider>
       <WalletManagerProvider>
-        <Router>
-          <Sidebar />
-          <div className="min-h-screen">
-            <Header />
-            <Footer />
-            
-            {/* Main Content - positioned to account for fixed header and footer */}
-            <main className=" pb-8 ml-[52px] ">
-              <Routes>
-                <Route path="/" element={<Navigate to="/discover" replace />} />
-                <Route path="/discover" element={<Discover />} />
-                <Route path="/portfolio" element={<Portfolio />} />
-                <Route path="/activity" element={<Activity />} />
-                <Route path="/rewards" element={<Rewards />} />
-                <Route path="/cult" element={<Cult />} />
-                <Route path="/studio" element={<Studio />} />
-                <Route path="/quick-launch" element={<QuickLaunch />} />
-                <Route path="/emoji-quick-launch" element={<QuickLaunch />} />
-                <Route path="/emoji-picker-demo" element={<EmojiPickerDemo />} />
-                <Route path="/emojis" element={<Emojis />} />
-                <Route path="/trading/:marketAddress" element={<Trading />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/auth-test" element={<AuthTest />} />
-                <Route path="/edit-profile" element={<EditProfile />} />
-                <Route path="/type-selection" element={<TypeSelection />} />
-              </Routes>
-            </main>
-          </div>
-        </Router>
-        <Toaster />
+        <CurrencyProvider>
+          <Router>
+            <Sidebar />
+            <div className="min-h-screen">
+              <Header />
+              <Footer />
+              
+              {/* Main Content - positioned to account for fixed header and footer */}
+              <main className=" pb-8 ml-[52px] ">
+                <Routes>
+                  <Route path="/" element={<Navigate to="/discover" replace />} />
+                  <Route path="/discover" element={<Discover />} />
+                  <Route path="/portfolio" element={<Portfolio />} />
+                  <Route path="/activity" element={<Activity />} />
+                  <Route path="/rewards" element={<Rewards />} />
+                  <Route path="/cult" element={<Cult />} />
+                  <Route path="/studio" element={<Studio />} />
+                  <Route path="/quick-launch" element={<QuickLaunch />} />
+                  <Route path="/emoji-quick-launch" element={<QuickLaunch />} />
+                  <Route path="/emoji-picker-demo" element={<EmojiPickerDemo />} />
+                  <Route path="/emojis" element={<Emojis />} />
+                  <Route path="/trading/:marketAddress" element={<Trading />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/auth-test" element={<AuthTest />} />
+                  <Route path="/edit-profile" element={<EditProfile />} />
+                  <Route path="/type-selection" element={<TypeSelection />} />
+                </Routes>
+              </main>
+            </div>
+          </Router>
+          <Toaster />
+        </CurrencyProvider>
       </WalletManagerProvider>
     </WalletProvider>
   );

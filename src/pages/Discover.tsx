@@ -5,6 +5,9 @@ import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import { Aptos, AptosConfig } from '@aptos-labs/ts-sdk';
 import { CONTRACT_ADDRESS, APTOS_API_KEY, DEVNET } from '../constants/contract';
 import { useToast } from '../hooks/use-toast';
+import { useCurrency } from '../context/CurrencyContext';
+import { useAptPrice } from '../hooks/useAptPrice';
+import { convertAptToUsd, formatAptAmount } from '../utils/priceConversion';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -71,6 +74,8 @@ interface TokenMarketData {
 const Discover: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAptCurrency } = useCurrency();
+  const { aptPrice } = useAptPrice();
   const [loading, setLoading] = useState(true);
   const [allMarkets, setAllMarkets] = useState<TokenMarketData[]>([]);
   const [featuredMarkets, setFeaturedMarkets] = useState<TokenMarketData[]>([]);
@@ -84,6 +89,37 @@ const Discover: React.FC = () => {
     }
   }), []);
   const aptos = useMemo(() => new Aptos(aptosConfig), [aptosConfig]);
+
+  // Helper function to format prices based on currency toggle
+  const formatPrice = (aptAmount: number): string => {
+    if (!aptPrice) return isAptCurrency ? `${aptAmount.toFixed(7)} APT` : '$0.00';
+    
+    if (isAptCurrency) {
+      return `${formatAptAmount(aptAmount)} APT`;
+    } else {
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
+
+  const formatMarketCap = (aptAmount: number): string => {
+    if (!aptPrice) return isAptCurrency ? `${aptAmount.toFixed(3)} APT` : '$0.00';
+    
+    if (isAptCurrency) {
+      return `${aptAmount.toFixed(3)} APT`;
+    } else {
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
+
+  const formatVolume = (aptAmount: number): string => {
+    if (!aptPrice) return isAptCurrency ? `${aptAmount.toFixed(3)} APT` : '$0.00';
+    
+    if (isAptCurrency) {
+      return `${aptAmount.toFixed(3)} APT`;
+    } else {
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
 
   // Fetch all markets data
   const fetchMarketsData = async () => {
@@ -442,10 +478,11 @@ const Discover: React.FC = () => {
         }}
       />
       
-            {/* Content */}
+      {/* Content */}
       <div className="mx-auto relative z-10 mt-16 px-4">
         <div className="w-full mx-auto relative group">
-                        {/* Navigation Arrows - Only visible on hover */}
+        
+        {/* Navigation Arrows - Only visible on hover */}
         <button
           className="swiper-button-prev absolute left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-surface/20 backdrop-blur-xl border border-white/10 rounded-full text-primary hover:text-primary/90 hover:bg-surface/30 transition-all duration-300 shadow-lg opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0"
           aria-label="Previous slide"
@@ -527,17 +564,17 @@ const Discover: React.FC = () => {
                     <div className="flex items-center justify-between space-x-6">
                       <div className="text-left">
                         <p className="text-xs text-text/60 mb-2">PRICE</p>
-                        <p className="text-sm font-semibold text-primary">{market.price} APT</p>
+                        <p className="text-sm font-semibold text-primary">{formatPrice(market.price)}</p>
                       </div>
                       <div className="w-px h-12 bg-white/10"></div>
                       <div className="text-left">
                         <p className="text-xs text-text/60 mb-2">MARKET CAP</p>
-                        <p className="text-sm font-semibold text-text">{market.marketCap.toFixed(3)} APT</p>
+                        <p className="text-sm font-semibold text-text">{formatMarketCap(market.marketCap)}</p>
                       </div>
                       <div className="w-px h-12 bg-white/10"></div>
                       <div className="text-left">
                         <p className="text-xs text-text/60 mb-2">24H VOL</p>
-                        <p className="text-sm font-semibold text-text">{market.volume24h} APT</p>
+                        <p className="text-sm font-semibold text-text">{formatVolume(market.volume24h)}</p>
                       </div>
                       <div className="w-px h-12 bg-white/10"></div>
                       <div className="text-left">
@@ -615,9 +652,11 @@ const Discover: React.FC = () => {
                         
                         {/* Name and price info */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-text">{market.token_name}</h3>
+                          <h3 className="text-base font-semibold text-text">
+                            {market.token_name.length > 15 ? `${market.token_name.slice(0, 15)}...` : market.token_name}
+                          </h3>
                           <div className="flex items-center space-x-2">
-                            <p className="text-sm font-medium text-primary">{market.price}</p>
+                            <p className="text-sm font-medium text-primary">{formatPrice(market.price)}</p>
                             <span className={`text-sm font-medium ${market.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                               {market.change24h >= 0 ? '+' : ''}{market.change24h.toFixed(1)}%
                             </span>
@@ -683,11 +722,13 @@ const Discover: React.FC = () => {
                         
                         {/* Name and price info */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-text">{market.token_name}</h3>
+                          <h3 className="text-base font-semibold text-text">
+                            {market.token_name.length > 15 ? `${market.token_name.slice(0, 15)}...` : market.token_name}
+                          </h3>
                           <div className="flex items-center space-x-2">
-                            <p className="text-sm font-medium text-primary">{market.price}</p>
+                            <p className="text-sm font-medium text-primary">{formatPrice(market.price)}</p>
                             <span className={`text-sm font-medium ${market.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                              {market.change24h >= 0 ? '+' : ''}{market.change24h.toFixed(1)}%
+                              {market.change24h >= 0 ? '+' : ''}{market.change24h.toFixed(2)}%
                             </span>
                           </div>
                         </div>
@@ -797,7 +838,7 @@ const Discover: React.FC = () => {
                        <img 
                          src={market.imageDataUrl} 
                          alt={market.token_name}
-                         className="w-full h-full object-cover"
+                         className="w-[85%] h-[85%] object-cover"
                          onError={(e) => {
                            // Fallback to emoji if image fails to load
                            const target = e.target as HTMLImageElement;
@@ -815,7 +856,9 @@ const Discover: React.FC = () => {
                      <div className="flex flex-col space-y-2">
                        {/* Token Name and Creator */}
                        <div className="space-y-0.5">
-                         <h3 className="text-sm font-semibold text-text truncate">{market.token_name}</h3>
+                         <h3 className="font-semibold text-text truncate">
+                          {market.token_name.length > 15 ? `${market.token_name.slice(0, 12)}...` : market.token_name}
+                         </h3>
                          <button 
                            className="text-xs text-text/60 hover:text-primary transition-colors cursor-pointer"
                            onClick={(e) => {
@@ -834,7 +877,7 @@ const Discover: React.FC = () => {
                          <svg className="w-4 h-4 text-text" fill="currentColor" viewBox="0 0 24 24">
                            <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
                          </svg>
-                         <span className="text-xs text-text">{market.volume24h} APT</span>
+                         <span className="text-xs text-text whitespace-nowrap">{formatVolume(market.volume24h)}</span>
                        </div>
                        
                        {/* Age */}
@@ -864,9 +907,9 @@ const Discover: React.FC = () => {
                      <div className="flex flex-col space-y-2 items-end">
                        {/* Price and 24h Change */}
                        <div className="space-y-0.5 text-right">
-                         <p className="text-sm font-medium text-primary">{market.price}</p>
+                         <p className="text-sm font-medium text-primary whitespace-nowrap">{formatPrice(market.price)}</p>
                          <span className={`text-xs font-medium ${market.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                           {market.change24h >= 0 ? '+' : ''}{market.change24h.toFixed(1)}%
+                           {market.change24h >= 0 ? '+' : ''}{market.change24h.toFixed(2)}%
                          </span>
                        </div>
                        
@@ -875,7 +918,7 @@ const Discover: React.FC = () => {
                          <svg className="w-4 h-4 text-text" fill="currentColor" viewBox="0 0 24 24">
                            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
                          </svg>
-                         <span className="text-xs text-text">{market.marketCap.toFixed(2)} APT</span>
+                         <span className="text-xs text-text whitespace-nowrap">{formatMarketCap(market.marketCap)}</span>
                        </div>
                        
                        {/* Holders */}

@@ -5,6 +5,9 @@ import { Aptos, AptosConfig } from '@aptos-labs/ts-sdk';
 import { CONTRACT_ADDRESS, APTOS_API_KEY, DEVNET } from '../constants/contract';
 import Swap from '../components/Swap';
 import PriceChange from '../components/PriceChange';
+import { useCurrency } from '../context/CurrencyContext';
+import { useAptPrice } from '../hooks/useAptPrice';
+import { convertAptToUsd, formatAptAmount, formatUsdAmount } from '../utils/priceConversion';
 
 // Types for trading data based on contract structure
 interface MarketDisplayData {
@@ -68,6 +71,8 @@ export default function Trading() {
   const { marketAddress } = useParams<{ marketAddress: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAptCurrency } = useCurrency();
+  const { aptPrice } = useAptPrice();
   
   // Initialize Aptos client
   const aptosConfig = new AptosConfig({ 
@@ -81,6 +86,52 @@ export default function Trading() {
   // State
   const [token, setToken] = useState<TokenMarketData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Helper functions for currency formatting
+  const formatPrice = (aptAmount: number): string => {
+    if (isAptCurrency) {
+      return formatAptAmount(aptAmount);
+    } else {
+      if (!aptPrice) return '$0.00';
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
+
+  const formatMarketCap = (aptAmount: number): string => {
+    if (isAptCurrency) {
+      return `${aptAmount.toLocaleString()} APT`;
+    } else {
+      if (!aptPrice) return '$0.00';
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
+
+  const formatVolume = (aptAmount: number): string => {
+    if (isAptCurrency) {
+      return `${aptAmount.toLocaleString()} APT`;
+    } else {
+      if (!aptPrice) return '$0.00';
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
+
+  const formatFdv = (aptAmount: number): string => {
+    if (isAptCurrency) {
+      return `${aptAmount.toLocaleString()} APT`;
+    } else {
+      if (!aptPrice) return '$0.00';
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
+
+  const formatLiquidity = (aptAmount: number): string => {
+    if (isAptCurrency) {
+      return `${aptAmount.toLocaleString()} APT`;
+    } else {
+      if (!aptPrice) return '$0.00';
+      return convertAptToUsd(aptAmount, aptPrice);
+    }
+  };
 
   // Fetch token data using the exact same logic as Tokens page
   const fetchTokenData = async () => {
@@ -485,7 +536,7 @@ export default function Trading() {
           {/* Price */}
           <div className="text-left mr-4">
             <div className="text-xl font-semibold text-text">
-              {token?.price ? `${token.price} APT` : '0 APT'}
+              {token?.price ? formatPrice(token.price) : (isAptCurrency ? '0 APT' : '$0.00')}
             </div>
             <div className="text-xs text-white/70">Price</div>
           </div>
@@ -550,13 +601,13 @@ export default function Trading() {
               {/* 24h Volume */}
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center col-span-2">
                 <div className="text-xs text-white/70 mb-1">24h Volume</div>
-                <div className="text-sm font-semibold text-text">{token.volume24h?.toLocaleString() || '0'} APT</div>
+                <div className="text-sm font-semibold text-text">{token.volume24h ? formatVolume(token.volume24h) : (isAptCurrency ? '0 APT' : '$0.00')}</div>
               </div>
               
               {/* FDV */}
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center">
                 <div className="text-xs text-white/70 mb-1">FDV</div>
-                <div className="text-sm font-semibold text-text">{token.fdv?.toLocaleString() || '0'} APT</div>
+                <div className="text-sm font-semibold text-text">{token.fdv ? formatFdv(token.fdv) : (isAptCurrency ? '0 APT' : '$0.00')}</div>
               </div>
               
               {/* Holders */}
@@ -568,13 +619,13 @@ export default function Trading() {
               {/* Market Cap */}
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center">
                 <div className="text-xs text-white/70 mb-1">Market Cap</div>
-                <div className="text-sm font-semibold text-text">{token.marketCap?.toLocaleString() || '0'} APT</div>
+                <div className="text-sm font-semibold text-text">{token.marketCap ? formatMarketCap(token.marketCap) : (isAptCurrency ? '0 APT' : '$0.00')}</div>
               </div>
               
               {/* Liquidity */}
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center">
                 <div className="text-xs text-white/70 mb-1">Liquidity</div>
-                <div className="text-sm font-semibold text-text">{token.liquidity?.toLocaleString() || '0'} APT</div>
+                <div className="text-sm font-semibold text-text">{token.liquidity ? formatLiquidity(token.liquidity) : (isAptCurrency ? '0 APT' : '$0.00')}</div>
               </div>
               
               {/* Circulating Supply */}
@@ -646,7 +697,7 @@ export default function Trading() {
               {/* Locked Liquidity */}
               <div className="flex justify-between items-center py-2">
                 <div className="text-xs text-white/70">Locked Liquidity</div>
-                <div className="text-sm font-semibold text-text">{token.liquidity?.toLocaleString() || '0'} APT</div>
+                <div className="text-sm font-semibold text-text">{token.liquidity ? formatLiquidity(token.liquidity) : (isAptCurrency ? '0 APT' : '$0.00')}</div>
               </div>
               
               {/* Total Transactions */}
@@ -695,9 +746,9 @@ export default function Trading() {
                   <div className="grid grid-cols-6 gap-4 py-3 text-sm border-b border-white/10">
                     <div className="text-white/70">2m ago</div>
                     <div className="text-green-400">Buy</div>
-                    <div className="text-text">0.00123</div>
+                    <div className="text-text">{isAptCurrency ? '0.00123' : '$0.00123'}</div>
                     <div className="text-text">1,000</div>
-                    <div className="text-text">1.23 APT</div>
+                    <div className="text-text">{isAptCurrency ? '1.23 APT' : '$1.23'}</div>
                     <div className="text-white/70">0x1234...5678</div>
                   </div>
                   
@@ -705,9 +756,9 @@ export default function Trading() {
                   <div className="grid grid-cols-6 gap-4 py-3 text-sm border-b border-white/10">
                     <div className="text-white/70">5m ago</div>
                     <div className="text-red-400">Sell</div>
-                    <div className="text-text">0.00122</div>
+                    <div className="text-text">{isAptCurrency ? '0.00122' : '$0.00122'}</div>
                     <div className="text-text">500</div>
-                    <div className="text-text">0.61 APT</div>
+                    <div className="text-text">{isAptCurrency ? '0.61 APT' : '$0.61'}</div>
                     <div className="text-white/70">0xabcd...efgh</div>
                   </div>
                   
@@ -715,9 +766,9 @@ export default function Trading() {
                   <div className="grid grid-cols-6 gap-4 py-3 text-sm border-b border-white/10">
                     <div className="text-white/70">12m ago</div>
                     <div className="text-green-400">Buy</div>
-                    <div className="text-text">0.00121</div>
+                    <div className="text-text">{isAptCurrency ? '0.00121' : '$0.00121'}</div>
                     <div className="text-text">2,000</div>
-                    <div className="text-text">2.42 APT</div>
+                    <div className="text-text">{isAptCurrency ? '2.42 APT' : '$2.42'}</div>
                     <div className="text-white/70">0x9876...5432</div>
                   </div>
                   
@@ -725,9 +776,9 @@ export default function Trading() {
                   <div className="grid grid-cols-6 gap-4 py-3 text-sm border-b border-white/10">
                     <div className="text-white/70">1h ago</div>
                     <div className="text-red-400">Sell</div>
-                    <div className="text-text">0.00120</div>
+                    <div className="text-text">{isAptCurrency ? '0.00120' : '$0.00120'}</div>
                     <div className="text-text">750</div>
-                    <div className="text-text">0.90 APT</div>
+                    <div className="text-text">{isAptCurrency ? '0.90 APT' : '$0.90'}</div>
                     <div className="text-white/70">0x5678...1234</div>
                   </div>
                   
@@ -735,9 +786,9 @@ export default function Trading() {
                   <div className="grid grid-cols-6 gap-4 py-3 text-sm border-b border-white/10">
                     <div className="text-white/70">3h ago</div>
                     <div className="text-green-400">Buy</div>
-                    <div className="text-text">0.00119</div>
+                    <div className="text-text">{isAptCurrency ? '0.00119' : '$0.00119'}</div>
                     <div className="text-text">1,500</div>
-                    <div className="text-text">1.79 APT</div>
+                    <div className="text-text">{isAptCurrency ? '1.79 APT' : '$1.79'}</div>
                     <div className="text-white/70">0xdcba...hgfe</div>
                   </div>
                 </div>
