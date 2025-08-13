@@ -95,35 +95,13 @@ export default function Footer() {
                 {priceLoading ? (
                   <div className="w-3 h-3 border border-primary/30 border-t-primary rounded-full animate-spin"></div>
                 ) : aptPrice ? (
-                  <span className="text-text/80 font-mono text-xs font-semibold">
+                  <span className="text-text/80 text-xs font-medium tracking-wide">
                     {formatPrice(aptPrice.usdPrice)}
                   </span>
                 ) : (
-                  <span className="text-text/80 font-mono text-xs font-semibold">$8.42</span>
+                  <span className="text-text/80 text-xs font-medium tracking-wide">$0.00</span>
                 )}
-                {/* Powered by Panora attribution */}
-                <span className="text-text/40 text-[10px] ml-1">Panora</span>
               </div>
-            </div>
-
-            {/* Creator/Explorer Mode Toggle */}
-            <div className="flex items-center space-x-2">
-              <span className="text-text/70 text-xs font-medium tracking-wide">Creator</span>
-              <button
-                onClick={() => setIsCreatorMode(!isCreatorMode)}
-                className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors duration-200 ${
-                  isCreatorMode ? 'bg-primary' : 'bg-white/10 border border-white/20'
-                }`}
-              >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full transition-all duration-200 ${
-                    isCreatorMode 
-                      ? 'bg-background translate-x-4' 
-                      : 'bg-white/40 translate-x-1'
-                  }`}
-                />
-              </button>
-              <span className="text-text/70 text-xs font-medium tracking-wide">Explorer</span>
             </div>
 
             {/* APT/USD Currency Toggle */}
@@ -144,6 +122,26 @@ export default function Footer() {
                 />
               </button>
               <span className="text-text/70 text-xs font-medium tracking-wide">USD</span>
+            </div>
+
+            {/* Creator/Explorer Mode Toggle */}
+            <div className="flex items-center space-x-2">
+              <span className="text-text/70 text-xs font-medium tracking-wide">Creator</span>
+              <button
+                onClick={() => setIsCreatorMode(!isCreatorMode)}
+                className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors duration-200 ${
+                  isCreatorMode ? 'bg-primary' : 'bg-white/10 border border-white/20'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3 w-3 transform rounded-full transition-all duration-200 ${
+                    isCreatorMode 
+                      ? 'bg-background translate-x-4' 
+                      : 'bg-white/40 translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className="text-text/70 text-xs font-medium tracking-wide">Explorer</span>
             </div>
 
             {/* Dark/Light Mode Toggle */}
